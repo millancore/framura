@@ -1,11 +1,11 @@
 <template>
   <div class="container">
     <div class="sidebar">
-      <form class="topic-form" @submit.prevent="addTopic">
+      <!-- <form class="topic-form" @submit.prevent="addTopic">
         <h2>Add Topic </h2>
         <input type="text" id="title" v-model="newTopic.title" required/>
 
-      </form>
+      </form> -->
 
       <h2 class="title">Topics List</h2>
       <TopicList
@@ -15,12 +15,13 @@
 
       />
     </div>
-    <Resource :topic="currentTopic" :resource-id="currentResource"/>
+    <Resource />
   </div>
 </template>
 
 <script setup>
 import {ref} from 'vue'
+import EventBus from "./EventBus";
 import TopicList from "./components/TopicList.vue";
 import Resource from "./components/Resource.vue";
 
@@ -31,6 +32,11 @@ const newTopic = ref({
 
 const currentTopic = ref(null)
 const currentResource = ref(null)
+
+
+function onResourceSelected(resourceId) {
+  currentResource.value = resourceId;
+}
 
 const addTopic = async () => {
   const response = await api.createTopic(newTopic.value.title);
@@ -59,14 +65,13 @@ function onTopicSelected(topicId) {
   background: #CBD5E1;
   padding: 0;
   margin: 0;
-  height: 98vh;
+  height: calc(100vh - 8px);
 }
 
 .sidebar {
-  background: #fff;
-
-  border-top-right-radius: 2px;
-  border-bottom-right-radius: 2px;
+  background: #FAFAFA;
+  padding-left: 8px;
+  width: 250px;
 }
 
 .title {

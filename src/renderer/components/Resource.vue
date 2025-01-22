@@ -28,31 +28,29 @@
 import {ref, onMounted, watch} from 'vue';
 import Youtube from "./Youtube.vue";
 import QuillEditor from "./Editor.vue";
+import {resourceApi, resourceApi as api} from "../Api";
+import EventBus from "../EventBus";
 
 const newResource = ref({
   title: '',
   url: '',
 });
 
+const topic = ref(null);
+const resourceId = ref(null);
+
 const resource = ref({});
 
-const props = defineProps({
-  topic: {
-    type: [Number, null],
-  },
-  resourceId: {
-    type: [Number, null],
-  },
+EventBus.on('loadResource', (resource) => {
+   resourceId.value = resource;
 })
 
-watch(() => props.resourceId, () => {
-  if (props.resourceId !== null) {
+watch(() => resourceId.value, () => {
     getResource();
-  }
 })
 
 async function getResource() {
-   resource.value = await api.getResource(props.resourceId);
+   resource.value = await resourceApi.get(resourceId.value)
 }
 
 
@@ -67,16 +65,18 @@ async function createResource() {
   .container {
      width: 100%;
      display: flex;
-     justify-content: center;
-     margin: 8px 16px;
-     gap: 16px;
+     justify-content: space-between;
+     margin-left: 16px;
+     margin-top: 8px;
+     margin-right: 4px;
+     gap: 12px;
   }
 
   .source {
     width: 50%;
-    background: white;
+    background: #FAFAFA;
     padding: 12px 16px;
-    border-radius: 6px;
+    border-radius: 6px 3px 3px 6px;
   }
 
   .source h2 {
@@ -86,9 +86,9 @@ async function createResource() {
 
   .notes {
     width: 50%;
-    background: white;
+    background: #FAFAFA;
     padding: 12px 16px;
-    border-radius: 6px;
+    border-radius: 3px 6px 6px 3px;
   }
 
 </style>

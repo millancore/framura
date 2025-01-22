@@ -6,6 +6,7 @@
 
 <script setup>
 import {onMounted, ref, watch} from 'vue';
+import {resourceApi} from "../Api";
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css'; // Import the Quill CSS style
 
@@ -51,12 +52,12 @@ async function initQuill() {
   })
 }
 
-function getNotes() {
-   return api.getNotes(props.resourceId)
+async function getNotes() {
+   return await resourceApi.notes(props.resourceId)
 }
 
 async function saveEditorContent() {
-  await api.updateNotes(props.resourceId, quill.value.root.innerHTML)
+  await resourceApi.updateNotes(props.resourceId, quill.value.root.innerHTML)
 }
 
 </script>

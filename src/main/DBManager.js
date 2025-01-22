@@ -53,3 +53,38 @@ export const resourceManager = {
         return db.prepare('SELECT notes FROM resources WHERE id = ?').get(resourceId);
     }
 }
+
+const endpoints = [];
+
+function register(endpoint, handler) {
+    endpoints.push({
+        name: endpoint,
+        handler: handler
+    });
+}
+
+register('topic.all', topicManager.getTopics);
+register('resource.by.topic', resourceManager.getResourcesByTopic);
+register('resource.get', resourceManager.getResource);
+register('resource.notes', resourceManager.getNotes);
+register('resource.notes.update', (params) => {
+    resourceManager.updateNotes(...params);
+});
+register('topic.create', topicManager.createTopic);
+register('resource.create', resourceManager.createResource);
+
+register('resource.delete', (params) => {
+    db.prepare('DELETE FROM resources WHERE id = ?').run(params);
+});
+
+
+const dbManager = {
+    query: (endpoint, params) => {
+        let handler = endpoints.find(e => e.name === endpoint).handler;
+
+        return handler(...params);
+    }
+}
+
+export default dbManager;
+

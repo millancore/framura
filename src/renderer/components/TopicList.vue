@@ -14,6 +14,8 @@
 
 import {ref, defineProps, onMounted, watch} from 'vue'
 import TopicItem from "./TopicItem.vue";
+import {topicApi} from "../Api";
+import EventBus from "../EventBus";
 
 const emit = defineEmits(['topicSelected', 'loadResource']);
 
@@ -23,13 +25,15 @@ const props = defineProps({
 
 const topics = ref([])
 
-const getTopics = async()  => {
-  topics.value = await api.getAll();
+async function getTopics() {
+  topics.value = await topicApi.all()
 }
 
-watch(() => props.reload, () => {
+EventBus.on('sidebarReload', () => {
+    topics.value = []
     getTopics()
 })
+
 
 function loadResource(resourceId) {
    emit('loadResource', resourceId)

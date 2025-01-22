@@ -1,39 +1,50 @@
 <template>
   <li class="topic-item">
-    <button class="topic-title" @click="handleClick(topic.id)"> {{ topic.title }}</button>
+    <a class="topic-title" @click="handleClick(topic.id)"> {{ topic.title }}</a>
     <ul class="resource-list" v-if="resources.length">
-      <li class="resource" @click="getResource(resource.id)" v-for="resource in resources" :key="resource.id">
-        {{ resource.title }}
-      </li>
+       <ResourceItem
+           :resource="resource"
+           v-for="resource in resources"
+           :key="resource.id"
+       />
     </ul>
   </li>
 </template>
 
 <script setup>
 
-import { ref, onMounted } from 'vue'
+import {onMounted, ref } from 'vue'
+import ResourceItem from "./ResourceItem.vue";
+import {resourceApi} from "../Api";
 
 const props = defineProps({
   topic: Object
 })
 
 const resources = ref([])
+const isOpen = ref(false)
+
+const toggleMenu = () => {
+  isOpen.value = !isOpen.value;
+};
+
 
 const emit = defineEmits(['topicSelected', 'requestResource'])
 
-onMounted(getResources)
+onMounted(() => {
+  getResources();
+});
+
 
 async function getResources() {
-   resources.value =  await api.getResourcesByTopic(props.topic.id)
+  resources.value = await resourceApi.getByTopic(props.topic.id)
 }
 
 function handleClick(topicId) {
    emit('topicSelected', topicId)
 }
 
-function getResource(resourceId) {
-  emit('requestResource', resourceId)
-}
+
 
 </script>
 
@@ -46,7 +57,6 @@ function getResource(resourceId) {
 }
 
 .topic-title {
-  text-transform: uppercase;
   color: #374151;
   font-weight: bold;
 }
@@ -57,29 +67,7 @@ function getResource(resourceId) {
   margin: 0;
 }
 
-.resource {
-  cursor: pointer;
-  padding: 2px 4px;
-  margin: 4px 0;
-
-}
-
-.resource:before {
-   content: '';
-   margin-right: 8px;
-}
-
-.resource:hover {
-  background-color: #CBD5E1;
-  padding: 4px 0;
-  border-right: 2px solid #007BFF;
-}
-
-
-
-
 button {
-  all: unset;
   cursor: pointer;
 }
 

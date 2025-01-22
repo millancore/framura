@@ -7,39 +7,10 @@ if (started) {
   app.quit();
 }
 
-import { topicManager, resourceManager } from "./main/DBManager";
+import dbManager from "./main/DBManager";
 
-ipcMain.handle('getTopics', async () => {
-  return topicManager.getTopics();
-})
-
-ipcMain.handle('createTopic', async (event, topic, parentTopic) => {
-  const newTopic = topicManager.createTopic(topic, parentTopic);
-  return { success: true, topic: newTopic }
-})
-
-ipcMain.handle('createResource', async (event, topicID, resource) => {
-
-  const result = resourceManager.createResource(topicID, resource);
-
-  return { success: true, resource: result }
-})
-
-ipcMain.handle('getResourcesByTopic', async (event, topic) => {
-  return resourceManager.getResourcesByTopic(topic);
-})
-
-ipcMain.handle('getResource', async (event, resourceID) => {
-  return resourceManager.getResource(resourceID);
-})
-
-ipcMain.handle('updateNotes', async (event, resourceID, notes) => {
-  resourceManager.updateNotes(resourceID, notes);
-  return { success: true }
-})
-
-ipcMain.handle('getNotes', async (event, resourceID) => {
-  return resourceManager.getNotes(resourceID);
+ipcMain.handle('dbManager', async (event, endpoint, ...params) => {
+  return await dbManager.query(endpoint, params)
 })
 
 
