@@ -31,9 +31,9 @@ export const topicManager = {
 };
 
 export const resourceManager = {
-    createResource: (topicID, resource) => {
-        const stm = db.prepare('INSERT INTO resources (title, url, topic_id) VALUES (?, ?, ?)');
-        return stm.run(resource.title, resource.url, topicID)
+    createResource: (resource) => {
+        const stm = db.prepare('INSERT INTO resources (topic_id, title, url) VALUES (?, ?, ?)');
+        return stm.run(resource.topicId, resource.title, resource.url);
     },
 
     getResourcesByTopic: (topic) => {
@@ -47,6 +47,11 @@ export const resourceManager = {
     updateNotes: (resourceId, notes) => {
         const stm = db.prepare('UPDATE resources SET notes = ? WHERE id = ?');
         return stm.run(notes, resourceId);
+    },
+    
+    updateTitle: (resourceId, title) => {
+        const stm = db.prepare('UPDATE resources SET title = ? WHERE id = ?');
+        return stm.run(title, resourceId);
     },
 
     getNotes: (resourceId) => {
@@ -70,11 +75,18 @@ register('resource.notes', resourceManager.getNotes);
 register('resource.notes.update', (params) => {
     resourceManager.updateNotes(...params);
 });
+
+register('resource.title.update', (params) => {
+    resourceManager.updateTitle(...params);
+});
+
 register('topic.create', topicManager.createTopic);
-register('resource.create', resourceManager.createResource);
+register('resource.create', (params) => {
+   return resourceManager.createResource(...params)
+});
 
 register('resource.delete', (params) => {
-    db.prepare('DELETE FROM resources WHERE id = ?').run(params);
+   return db.prepare('DELETE FROM resources WHERE id = ?').run(params);
 });
 
 

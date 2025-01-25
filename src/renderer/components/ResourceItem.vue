@@ -1,8 +1,15 @@
 <template>
-  <li class="resource">
-    <span class="resource-title" @click="getResource(resource.id)">
+  <li class="resource" :class="{'selected': active}">
+    <span v-if="!edit" class="resource-title" @click="getResource(resource.id)">
       {{ resource.title }}
     </span>
+    <form v-if="edit" @submit.prevent="updateTitle">
+        <input
+            @keydown.esc="cancelEdit"
+            ref="input_title"
+            type="text"
+            v-model="resource.title">
+    </form>
     <ellipsis-horizontal-icon ref="options" @click="toggleMenu" class="icon"/>
     <transition name="fade">
       <div class="context-menu-container">
@@ -24,7 +31,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, nextTick} from 'vue'
 import {EllipsisHorizontalIcon, PencilIcon, TrashIcon} from '@heroicons/vue/16/solid'
 import EventBus from "../EventBus";
 import { resourceApi } from "../Api";
@@ -33,22 +40,40 @@ const props = defineProps({
   resource: Object
 })
 
+const emit = defineEmits(['reloadResources'])
+
+const edit = ref(false)
+const input_title = ref(null)
+    
 const isOpen = ref(false)
 const menu = ref(null)
 const options = ref(null)
+
+const active = ref(false)
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
 })
 
+EventBus.on('resource-loaded', (id) => {
+  active.value = false;
+
+  if (props.resource.id === id) {
+       active.value = true;
+   }
+})
+
 function handleClickOutside(e) {
-  if (!menu.value.contains(e.target) && !options.value.contains(e.target)) {
+  if (isOpen.value &&
+      !menu.value.contains(e.target) &&
+      !options.value.contains(e.target)
+  ) {
     isOpen.value = false;
   }
 }
 
 function getResource(resourceId) {
-  EventBus.emit('loadResource', resourceId)
+  EventBus.emit('load-resource', resourceId)
 }
 
 function toggleMenu() {
@@ -56,8 +81,33 @@ function toggleMenu() {
 }
 
 async function deleteResource() {
- const res = resourceApi.delete(props.resource.id)
-  EventBus.emit('sidebarReload')
+  await resourceApi.delete(props.resource.id)
+
+  /** Emit to parent reload */
+  emit('reloadResources')
+
+  /** If is current resource move to Topic */
+  EventBus.emit('resource-deleted', props.resource)
+}
+
+function rename() {
+  edit.value = true;
+  isOpen.value = false;
+
+  nextTick(() => {
+    input_title.value.focus();
+  });
+}
+
+function updateTitle() {
+  edit.value = false;
+  resourceApi.update(props.resource.id, props.resource.title)
+  EventBus.emit('resource-updated', props.resource)
+}
+
+function cancelEdit() {
+  edit.value = false;
+  emit('reloadResources')
 }
 
 </script>
@@ -76,8 +126,13 @@ async function deleteResource() {
 }
 
 .resource:hover {
-  background-color: #F5F5F4;
-  border-right: 3px solid #F97316;
+  background-color: #dbe8fe;
+  border-right: 3px solid #1e55af;
+}
+
+ .selected {
+   background-color: #dbe8fe;
+   border-right: 3px solid #1e55af;
 }
 
 .resource:hover .icon {

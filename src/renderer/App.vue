@@ -8,35 +8,51 @@
       </form> -->
 
       <h2 class="title">Topics List</h2>
-      <TopicList
-          :reload="events"
-          @topic-selected="onTopicSelected"
-          @load-resource="currentResource = $event"
-
-      />
+      <TopicList :reload="events"/>
     </div>
-    <Resource />
+
+    <div class="resource-container">
+      <component :is="currentComponent" :entity-id="entityId"/>
+    </div>
+
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref, shallowRef} from 'vue'
 import EventBus from "./EventBus";
 import TopicList from "./components/TopicList.vue";
 import Resource from "./components/Resource.vue";
+import Topic from "./components/Topic.vue";
 
 const events = ref(0)
+const entityId = ref(null);
 const newTopic = ref({
   title: "",
 })
 
-const currentTopic = ref(null)
-const currentResource = ref(null)
+const currentComponent = shallowRef(Resource)
 
+/*
+ * Load Resource Component
+ */
+EventBus.on('load-resource', (resourceId) => {
+  currentComponent.value = Resource;
+  entityId.value = resourceId;
+})
 
-function onResourceSelected(resourceId) {
-  currentResource.value = resourceId;
-}
+/**
+ * Load Topic Component
+ */
+EventBus.on('new-resource', (topicId) => {
+  currentComponent.value = Topic;
+  entityId.value = topicId;
+})
+
+EventBus.on('load-topic', (topicId) => {
+  currentComponent.value = Topic;
+  entityId.value = topicId;
+})
 
 const addTopic = async () => {
   const response = await api.createTopic(newTopic.value.title);
@@ -48,13 +64,6 @@ const addTopic = async () => {
     events.value++
   }
 }
-
-function onTopicSelected(topicId) {
-  currentTopic.value = topicId;
-  currentResource.value = null;
-}
-
-
 </script>
 
 
@@ -66,6 +75,14 @@ function onTopicSelected(topicId) {
   padding: 0;
   margin: 0;
   height: calc(100vh - 8px);
+}
+
+.resource-container {
+  width: 100%;
+  margin-left: 16px;
+  margin-top: 8px;
+  margin-right: 4px;
+  gap: 12px;
 }
 
 .sidebar {

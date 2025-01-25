@@ -1,51 +1,47 @@
 <template>
   <li class="topic-item">
-    <a class="topic-title" @click="handleClick(topic.id)"> {{ topic.title }}</a>
+    <a class="topic-title" @click="newResource()"> {{ topic.title }}</a>
     <ul class="resource-list" v-if="resources.length">
-       <ResourceItem
-           :resource="resource"
-           v-for="resource in resources"
-           :key="resource.id"
-       />
+      <ResourceItem
+          :resource="resource"
+          v-for="resource in resources"
+          :key="resource.id"
+          @reloadResources="getResources"
+      />
     </ul>
   </li>
 </template>
 
 <script setup>
 
-import {onMounted, ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import ResourceItem from "./ResourceItem.vue";
 import {resourceApi} from "../Api";
+import EventBus from "../EventBus";
 
 const props = defineProps({
   topic: Object
 })
 
 const resources = ref([])
-const isOpen = ref(false)
-
-const toggleMenu = () => {
-  isOpen.value = !isOpen.value;
-};
-
-
-const emit = defineEmits(['topicSelected', 'requestResource'])
 
 onMounted(() => {
   getResources();
 });
 
+EventBus.on('resource-created', (id) => {
+  if (props.topic.id === id) {
+    getResources();
+  }
+})
 
 async function getResources() {
   resources.value = await resourceApi.getByTopic(props.topic.id)
 }
 
-function handleClick(topicId) {
-   emit('topicSelected', topicId)
+function newResource() {
+  EventBus.emit('new-resource', props.topic.id)
 }
-
-
-
 </script>
 
 <style scoped>
