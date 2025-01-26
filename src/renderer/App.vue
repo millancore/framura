@@ -1,15 +1,6 @@
 <template>
   <div class="container">
-    <div class="sidebar">
-      <!-- <form class="topic-form" @submit.prevent="addTopic">
-        <h2>Add Topic </h2>
-        <input type="text" id="title" v-model="newTopic.title" required/>
-
-      </form> -->
-
-      <h2 class="title">Topics List</h2>
-      <TopicList :reload="events"/>
-    </div>
+    <Sidebar :reload="events"/>
 
     <div class="resource-container">
       <component :is="currentComponent" :entity-id="entityId"/>
@@ -21,17 +12,15 @@
 <script setup>
 import {ref, shallowRef} from 'vue'
 import EventBus from "./EventBus";
-import TopicList from "./components/TopicList.vue";
-import Resource from "./components/Resource.vue";
+import Sidebar from "./components/sidebar/Sidebar.vue";
+import Resource from "./components/content/Resource.vue";
 import Topic from "./components/Topic.vue";
+import Init from "./components/Init.vue";
 
 const events = ref(0)
 const entityId = ref(null);
-const newTopic = ref({
-  title: "",
-})
 
-const currentComponent = shallowRef(Resource)
+const currentComponent = shallowRef(Init)
 
 /*
  * Load Resource Component
@@ -54,21 +43,15 @@ EventBus.on('load-topic', (topicId) => {
   entityId.value = topicId;
 })
 
-const addTopic = async () => {
-  const response = await api.createTopic(newTopic.value.title);
+EventBus.on('app.show.init', () => {
+  currentComponent.value = Init;
+  entityId.value = null;
+})
 
-  console.log(response);
-
-  if (response.success) {
-    newTopic.value.title = ""; // Reset the input field after successfully adding a topic
-    events.value++
-  }
-}
 </script>
 
 
 <style scoped>
-
 .container {
   display: flex;
   background: #CBD5E1;
@@ -85,11 +68,6 @@ const addTopic = async () => {
   gap: 12px;
 }
 
-.sidebar {
-  background: #FAFAFA;
-  padding-left: 8px;
-  width: 250px;
-}
 
 .title {
   color: #64748B;

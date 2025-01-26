@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
+:root {
+  --primary-color: #2563EB;
+  --primary-hover-color: #1E40AF;
+  --primary-active-color: #1C4BEC;
+  --disabled-color: rgba(158, 169, 182, 0.36);
+  --background-color: #CBD5E1;
+  --text-color: #ffffff;
+}
+
 body {
   background: #CBD5E1;
   margin-top: 0;
@@ -8,4 +17,98 @@ body {
   font-optical-sizing: auto;
   font-weight: normal;
   font-style: normal;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+textarea,
+select {
+  display: block;
+  width: 100%;
+  padding: 0.5em;
+  margin: 0.5em 0;
+  font-family: inherit;
+  font-size: 1em;
+  background-color: #ffffff;
+  border: 1px solid var(--disabled-color);
+  border-radius: 0.25em;
+  box-sizing: border-box;
+  line-height: 1.25;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-hover-color);
+  box-shadow: 0 0 0 0.2em rgba(37, 99, 235, 0.25);
+}
+
+textarea {
+  resize: vertical;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='rgba(37, 99, 235, 1)' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5em center;
+  background-size: 1em;
+  padding-right: 2em;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: #e5e7eb;
+  border-color: var(--disabled-color);
+  color: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+button {
+  display: inline-block;
+  padding: 0.5em 1em;
+  margin: 0;
+  border: 1px solid var(--primary-color);
+  border-radius: 0.25em;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1.25;
+  transition: background-color 0.3s, border-color 0.3s;
+
+  /* Remove outlines on focus for better appearance */
+  outline: none;
+}
+
+button:hover {
+  background-color: var(--primary-hover-color);
+  border-color: var(--primary-hover-color);
+}
+
+button:active {
+  background-color: var(--primary-active-color);
+  border-color: var(--primary-active-color);
+}
+
+button:disabled {
+  background-color: var(--disabled-color);
+  border-color: var(--disabled-color);
+  cursor: not-allowed;
+  opacity: 0.6;
 }

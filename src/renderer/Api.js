@@ -1,6 +1,12 @@
 export const topicApi = {
     all: () => {
         return api.request("topic.all")
+    },
+    create: (title) => {
+        return api.request("topic.create", title)
+    },
+    get: (id) => {
+        return api.request("topic.get", id)
     }
 }
 

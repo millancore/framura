@@ -27,6 +27,9 @@ export const topicManager = {
 
     createTopic: (title, parentId) => {
         return db.prepare('INSERT INTO topics (title, parent_id) VALUES (?, ?)').run(title, parentId);
+    },
+    getTopic: (topicId) => {
+        return db.prepare('SELECT * FROM topics WHERE id = ?').get(topicId);
     }
 };
 
@@ -69,6 +72,9 @@ function register(endpoint, handler) {
 }
 
 register('topic.all', topicManager.getTopics);
+register('topic.create', topicManager.createTopic);
+register('topic.get', topicManager.getTopic);
+
 register('resource.by.topic', resourceManager.getResourcesByTopic);
 register('resource.get', resourceManager.getResource);
 register('resource.notes', resourceManager.getNotes);
@@ -80,7 +86,6 @@ register('resource.title.update', (params) => {
     resourceManager.updateTitle(...params);
 });
 
-register('topic.create', topicManager.createTopic);
 register('resource.create', (params) => {
    return resourceManager.createResource(...params)
 });

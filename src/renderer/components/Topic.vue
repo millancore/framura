@@ -1,31 +1,43 @@
 <template>
   <div class="topic-container">
+    <h1>{{ topic.title }}</h1>
+
+    <h3>Add Resource</h3>
     <form  @submit.prevent="createResource">
-    <div>
+    <div class="form-item">
       <label for="title">Title:</label>
       <input type="text" id="title" v-model="newResource.title" required/>
     </div>
-    <div>
-      <label for="url">YouTube URL</label>
+    <div class="form-item">
+      <label for="url">YouTube:</label>
       <input
           @keydown="error = false"
+          id="url"
           type="url"
           v-model="newResource.url"
           required
       />
-      <p v-show="error" class="error">Please enter a valid YouTube URL</p>
     </div>
+      <p v-show="error" class="error">Please enter a valid YouTube URL</p>
     <button type="submit">Add</button>
   </form>
+
+    <div class="notes">
+      <h3>Notes:</h3>
+
+
+    </div>
+
   </div>
 </template>
 
 <script setup>
-import {ref} from 'vue'
-import { resourceApi } from "../Api";
+import {ref, onMounted, watch, toRef } from 'vue'
+import { resourceApi, topicApi } from "../Api";
 import EventBus from "../EventBus";
 
 const error = ref(false);
+const topic = ref({});
 const newResource = ref({
   title: '',
   url: ''
@@ -33,6 +45,16 @@ const newResource = ref({
 
 const props = defineProps({
   entityId: Number
+})
+
+const topicId = toRef(props, 'entityId');
+
+onMounted(() => {
+   getTopic();
+})
+
+watch(topicId, () => {
+  getTopic();
 })
 
 async function createResource() {
@@ -50,10 +72,13 @@ async function createResource() {
   });
 
   if(result.changes) {
-    EventBus.emit('resource-created', props.entityId);
     EventBus.emit('load-resource', result.lastInsertRowid);
+    EventBus.emit('sidebar.topic.refresh', props.entityId);
   }
+}
 
+async function getTopic() {
+    topic.value = await topicApi.get(props.entityId);
 }
 
 function validateYoutubeUrl() {
@@ -69,8 +94,15 @@ function validateYoutubeUrl() {
 .topic-container {
   width: 100%;
   background: #FAFAFA;
-  border-radius: 6px;
-  height: 100%;
+  padding: 1rem;
+}
+
+h1, h3 {
+  margin: 0;
+}
+
+h1 {
+  margin-bottom: 1rem;
 }
 
 form {
@@ -78,52 +110,30 @@ form {
   flex-direction: column;
   gap: 1rem;
   max-width: 400px;
-  padding: 1rem;
 }
 
-form div {
+.form-item {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
 }
 
-form label {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-form input {
+.form-item label {
+  width: 90px;
+  background: var(--background-color);
   padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-}
-
-form input:focus {
-  border-color: #609afa;
-}
-
-form button {
-  padding: 0.7rem;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  background-color: #3b82f6;
-  border: none;
-  border-radius: 2px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-form button:hover {
-  background-color: #2570eb;
+  border-radius: 3px;
 }
 
 .error {
   color: #F43F5E;
   font-weight: 600;
   font-size: 0.9rem;
+  margin: 0;
+}
+
+.notes {
+  margin-top: 2rem;
 }
 
 </style>

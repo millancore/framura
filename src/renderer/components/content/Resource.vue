@@ -1,21 +1,21 @@
 <template>
   <div class="container" v-if="resource.id">
-    <div class="source">
-      <h2>{{ resource.title }}</h2>
-      <Youtube v-if="resource.url" :video-url="resource.url"/>
-    </div>
     <div class="notes">
       <QuillEditor :resource-id="resource.id"/>
     </div>
+    <div class="source">
+      <Youtube v-if="resource.url" :video-url="resource.url"/>
+    </div>
+
   </div>
 </template>
 
 <script setup>
 import {ref, watch, onMounted} from 'vue';
 import Youtube from "./Youtube.vue";
-import {resourceApi} from "../Api";
+import {resourceApi} from "@renderer/Api";
 import QuillEditor from "./Editor.vue";
-import EventBus from "../EventBus";
+import EventBus from "@renderer/EventBus";
 
 const resourceId = ref(null);
 const resource = ref({});
@@ -30,7 +30,6 @@ onMounted(() => {
 
 watch(resourceId, () => {
   getResource();
-  EventBus.emit('resource-loaded', resourceId.value)
 })
 
 /**
@@ -77,8 +76,6 @@ async function getResource() {
 .source {
   width: 50%;
   background: #FAFAFA;
-  padding: 12px 16px;
-  border-radius: 6px 3px 3px 6px;
 }
 
 .source h2 {
@@ -89,8 +86,6 @@ async function getResource() {
 .notes {
   width: 50%;
   background: #FAFAFA;
-  padding: 12px 16px;
-  border-radius: 3px 6px 6px 3px;
 }
 
 </style>

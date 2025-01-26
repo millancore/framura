@@ -6,7 +6,7 @@
 
 <script setup>
 import {onMounted, ref, watch} from 'vue';
-import {resourceApi} from "../Api";
+import {resourceApi} from "@renderer/Api";
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css'; // Import the Quill CSS style
 
@@ -69,10 +69,9 @@ async function saveEditorContent() {
 }
 
 .ql-container {
-  background-color: #fff;
+  background-color: #f8f8ec;
   box-sizing: border-box;
   font-size: v-bind(fontSize);
 }
-
 
 </style>
