@@ -6,7 +6,7 @@
         class="timestamp-add"
         v-if="canCreateMarks"
         @click="addTimestamp">
-      <clock-icon class="clock-icon"/>
+      <ClockIcon class="clock-icon"/>
      Capture
     </button>
 
@@ -22,7 +22,7 @@
               placeholder="Add tex"
           />
         </form>
-        <trash-icon class="trash-icon"/>
+        <Trash2Icon class="trash-icon"/>
       </li>
     </ul>
     </div>
@@ -34,7 +34,8 @@
 <script setup>
 
 import {computed, onMounted, ref, watch, toRef, nextTick} from 'vue'
-import {ClockIcon, TrashIcon } from '@heroicons/vue/16/solid'
+import { ClockIcon, Trash2Icon } from 'lucide-vue-next'
+import {MarkApi} from '@renderer/Api'
 
 const player = ref(null)
 const timestamps = ref([])
@@ -67,7 +68,7 @@ const embedUrl = computed(() => {
       : null;
 })
 
-function addTimestamp() {
+async function addTimestamp() {
 
   const time = player.value.getCurrentTime();
 
@@ -75,6 +76,7 @@ function addTimestamp() {
     text: `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, '0')}`,
     mark: time
   })
+
 }
 
 function loadYoutubeIframeAPI() {
@@ -117,21 +119,8 @@ function onReady(event) {
 }
 
 .timestamp-container {
-   overflow-y: auto;
-   height: 60vh;
-}
-
-.timestamp-container::-webkit-scrollbar {
-  width: 4px;
-}
-
-.timestamp-container::-webkit-scrollbar-thumb {
-  background-color: #94A3B8;
-  border-radius: 10px;
-}
-
-.timestamp-container::-webkit-scrollbar-thumb:hover {
-  background-color: #64748B;
+  overflow-y: auto;
+  max-height: 50vh;
 }
 
 .timestamp-add {

@@ -18,9 +18,19 @@ CREATE TABLE IF NOT EXISTS topics (
     topic_id INTEGER NOT NULL,
     FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE
   );
+    
+  CREATE TABLE IF NOT EXISTS marks (
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   resource_id INTEGER NOT NULL,
+   mark_type TEXT NOT NULL,
+   title TEXT DEFAULT '',
+   mark TEXT NOT NULL,
+   FOREIGN KEY (resource_id) REFERENCES resources (id) ON DELETE CASCADE   
+  )  
+    
 `);
 
-export const topicManager = {
+ const topicManager = {
     getTopics: () => {
         return db.prepare('SELECT * FROM topics').all();
     },
@@ -33,7 +43,8 @@ export const topicManager = {
     }
 };
 
-export const resourceManager = {
+
+ const resourceManager = {
     createResource: (resource) => {
         const stm = db.prepare('INSERT INTO resources (topic_id, title, url) VALUES (?, ?, ?)');
         return stm.run(resource.topicId, resource.title, resource.url);
@@ -59,6 +70,21 @@ export const resourceManager = {
 
     getNotes: (resourceId) => {
         return db.prepare('SELECT notes FROM resources WHERE id = ?').get(resourceId);
+    }
+}
+
+const markManager = {
+     create: (mark) => {
+         const stmt = db.prepare('INSERT INTO marks (resource_id, mark_type, title, mark) VALUES (?, ?, ?, ?)');
+         return stmt.run(mark.resourceId, mark.markType, mark.title, mark.mark);
+     },
+    updateTitle: (id, title) => {
+         const stmt = db.prepare('UPDATE marks SET title = ? WHERE id = ?');
+         return stmt.run(title, id);
+    },
+    delete: (id) => {
+         const stmt = db.prepare('DELETE FROM marks WHERE id = ?');
+         return stmt.run(id);
     }
 }
 
@@ -93,6 +119,20 @@ register('resource.create', (params) => {
 register('resource.delete', (params) => {
    return db.prepare('DELETE FROM resources WHERE id = ?').run(params);
 });
+
+/**** Marks ****/
+register('mark.create', (params) => {
+    return markManager.create(...params);
+});
+
+register('mark.title.update', (params) => {
+    return markManager.updateTitle(...params);
+});
+
+register('mark.delete', (params) => {
+    return markManager.delete(...params);
+});
+
 
 
 const dbManager = {

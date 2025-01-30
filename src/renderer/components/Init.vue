@@ -41,7 +41,6 @@ async function createTopic() {
 
 <style scoped>
   .init-container {
-    width: 100%;
     background: white;
     padding: 1rem;
   }

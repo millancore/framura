@@ -57,7 +57,6 @@ EventBus.on('app.show.init', () => {
   background: #CBD5E1;
   padding: 0;
   margin: 0;
-  height: calc(100vh - 8px);
 }
 
 .resource-container {

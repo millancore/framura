@@ -1,7 +1,7 @@
 <template>
   <div class="container" v-if="resource.id">
     <div class="notes">
-      <QuillEditor :resource-id="resource.id"/>
+      <BlockEditor :resource-id="resource.id" />
     </div>
     <div class="source">
       <Youtube v-if="resource.url" :video-url="resource.url"/>
@@ -15,6 +15,7 @@ import {ref, watch, onMounted} from 'vue';
 import Youtube from "./Youtube.vue";
 import {resourceApi} from "@renderer/Api";
 import QuillEditor from "./Editor.vue";
+import BlockEditor from "./BlockEditor.vue";
 import EventBus from "@renderer/EventBus";
 
 const resourceId = ref(null);

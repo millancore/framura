@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar">
     <div class="sidebar-header">
-    <pencil-square-icon @click="showInit" class="home-icon"/>
+    <SquarePenIcon @click="showInit" class="home-icon"/>
     </div>
     <ul class="topic-list">
       <TopicItem
@@ -19,7 +19,7 @@ import {onMounted, ref} from 'vue'
 import TopicItem from "./TopicItem.vue";
 import {topicApi} from "@renderer/Api";
 import EventBus from "@renderer/EventBus";
-import {PencilSquareIcon } from "@heroicons/vue/16/solid"
+import { SquarePenIcon } from 'lucide-vue-next'
 
 const topics = ref([])
 
@@ -61,6 +61,7 @@ async function getTopics() {
   padding-left: 8px;
   width: 250px;
   overflow-y: auto;
+  height: 100vh;
 }
 
 .sidebar::-webkit-scrollbar {

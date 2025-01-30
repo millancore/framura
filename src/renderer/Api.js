@@ -32,5 +32,16 @@ export const resourceApi = {
     update: (resourceId, title) => {
         api.request("resource.title.update", resourceId, title)
     }
+}
 
+export const markApi = {
+    create: (params) => {
+        return api.request("mark.create", params)
+    },
+    updateTitle: (markId, title) => {
+        return api.request("mark.title.update", markId, title)
+    },
+    delete: (markId) => {
+        return api.request("mark.delete", markId)
+    }
 }

@@ -1,8 +1,23 @@
 <template>
   <li class="resource" :class="{'selected': active}">
-    <span class="resource-title" @click="getResource(resource.id)">
+    <span v-if="!edit" class="resource-title" @click="getResource(resource.id)">
       {{ resource.title }}
     </span>
+
+    <span v-if="edit">
+      <form @submit.prevent="updateTitle">
+        <input
+            @keydown.esc="cancelEdit"
+            type="text"
+            class="resource-title"
+            v-model="props.resource.title"
+            ref="input_title"
+        />
+        <CircleXIcon @click="cancelEdit" class="cancel-icon" />
+      </form>
+    </span>
+    <PencilIcon v-if="!edit" class="edit-icon icon" @click="rename"/>
+    <Trash2Icon v-if="!edit" class="delete-icon icon" @click="deleteResource"/>
   </li>
 </template>
 
@@ -10,6 +25,7 @@
 import {onMounted, ref, nextTick} from 'vue'
 import EventBus from "@renderer/EventBus";
 import { resourceApi } from "@renderer/Api";
+import { PencilIcon, Trash2Icon, CircleXIcon } from 'lucide-vue-next'
 
 const props = defineProps({
   resource: Object
@@ -101,9 +117,45 @@ function cancelEdit() {
   border-bottom-left-radius: 4px;
 }
 
+.resource form {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.resource form input {
+  width: 80%;
+  padding: 2px;
+}
+
+.icon {
+  display: none;
+}
+
+.resource:hover .icon {
+  display: block;
+}
+
+.edit-icon {
+  display: none;
+  width: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.delete-icon {
+  color: #E11D48;
+  width: 1.2rem;
+}
+
+.cancel-icon {
+  color: #1E293B;
+  width: 1.3rem;
+}
+
 .resource:hover {
   background-color: #dbe8fe;
-  border-right: 3px solid #1e55af;
+  padding: 6px;
+  margin: 3px 0 3px 3px;
 }
 
  .selected {
@@ -111,9 +163,7 @@ function cancelEdit() {
    border-right: 3px solid #1e55af;
 }
 
-.resource:hover .icon {
-  display: block;
-}
+
 
 .resource-title {
   width: 100%;
