@@ -33,7 +33,7 @@
 
 <script setup>
 import {ref, onMounted, watch, toRef } from 'vue'
-import { resourceApi, topicApi } from "../Api";
+import { resourceApi, topicApi } from "@renderer/Api";
 import EventBus from "../EventBus";
 
 const error = ref(false);
@@ -92,13 +92,14 @@ function validateYoutubeUrl() {
 <style scoped>
 
 .topic-container {
-  width: 100%;
   background: #FAFAFA;
   padding: 1rem;
+  min-height: 96%;
 }
 
 h1, h3 {
   margin: 0;
+  color: #374151;
 }
 
 h1 {
@@ -108,7 +109,6 @@ h1 {
 form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   max-width: 400px;
 }
 
@@ -120,7 +120,6 @@ form {
 
 .form-item label {
   width: 90px;
-  background: var(--background-color);
   padding: 0.5rem;
   border-radius: 3px;
 }

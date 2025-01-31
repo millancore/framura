@@ -57,11 +57,19 @@ function newResource() {
 .topic-item {
   margin-top: 16px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #e5e7eb;
 }
 
 .topic-title {
-  color: #374151;
+  color: #1E293B;
+  cursor: pointer;
+  display: block;
+}
+
+.topic-title:hover {
+  background-color: #E2E8F0;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  padding: 4px;
 }
 
 .resource-list {

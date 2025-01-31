@@ -13,16 +13,17 @@
     <div class="timestamp-container">
     <ul class="timestamps-list" v-if="timestamps.length">
       <li class="timestamp" v-for="timestamp in timestamps" :key="timestamp.mark">
-        <button @click="seekTo(timestamp.mark)">{{ timestamp.text }}</button>
-        <form @submit.prevent="updateTimestamp(timestamp.id)">
+        <button @click="seekTo(timestamp.mark)">{{ timestamp.button }}</button>
+        <form @submit.prevent="updateTitle(timestamp)">
           <input
+              @focusout="updateTitle(timestamp)"
               id="timestamp-text"
               v-model="timestamp.title"
               type="text"
               placeholder="Add tex"
           />
         </form>
-        <Trash2Icon class="trash-icon"/>
+        <Trash2Icon @click="deleteTimestamp(timestamp.id)" class="trash-icon"/>
       </li>
     </ul>
     </div>
@@ -35,17 +36,18 @@
 
 import {computed, onMounted, ref, watch, toRef, nextTick} from 'vue'
 import { ClockIcon, Trash2Icon } from 'lucide-vue-next'
-import {MarkApi} from '@renderer/Api'
+import {markApi} from '@renderer/Api'
 
 const player = ref(null)
 const timestamps = ref([])
 const canCreateMarks = ref(false)
 
 const props = defineProps({
-  videoUrl: String
+  url: String,
+  resourceId: Number,
 })
 
-const url = toRef(props, 'videoUrl');
+const watchResourceId = toRef(props, 'resourceId')
 
 onMounted(() => {
   loadYoutubeIframeAPI();
@@ -54,12 +56,13 @@ onMounted(() => {
   });
 })
 
-watch(url, () => {
-  timestamps.value = [];
+watch(watchResourceId, () => {
+  loadMarks()
 })
 
+
 const videoId = computed(() => {
-  return props.videoUrl?.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[&?]?.*)/)?.[1] || null;
+  return props.url?.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[&?]?.*)/)?.[1] || null;
 })
 
 const embedUrl = computed(() => {
@@ -72,48 +75,82 @@ async function addTimestamp() {
 
   const time = player.value.getCurrentTime();
 
-  timestamps.value.push({
-    text: `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, '0')}`,
-    mark: time
-  })
+  const timestamp = {
+    resource_id: props.resourceId,
+    mark: time,
+    type: 'youtube',
+    title: ''
+  };
 
+  await markApi.create(timestamp)
+  await loadMarks()
 }
 
-function loadYoutubeIframeAPI() {
-  if (!window.YT) {
-    const script = document.createElement("script");
+async function loadMarks() {
+  let marks  = await markApi.getByResource(props.resourceId)
 
-    script.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(script, firstScriptTag);
+  timestamps.value = marks.map((mark) => ({
+    id: mark.id,
+    title: mark.title,
+    mark: mark.mark,
+    button: `${Math.floor(mark.mark / 60)}:${String(Math.floor(mark.mark % 60)).padStart(2, '0')}`
+  }));
+  
+  canCreateMarks.value = true;
+}
 
-    window.onYouTubeIframeAPIReady = () => {
+async function updateTitle(timestamp) {
+  await markApi.updateTitle(timestamp.id, timestamp.title)
+  await loadMarks()
+}
 
-      player.value = new YT.Player('player', {
-        videoId: videoId.value,
-        events: {
-          'onReady': onReady
-        }
-      });
-    }
+async function deleteTimestamp(id) {
+  await markApi.delete(id)
+  await loadMarks()
+}
+
+function initPlayer() {
+  if (!videoId.value) {
+    console.error("Video ID is missing. Cannot initialize the player.");
+    return;
   }
+
+  player.value = new YT.Player('player', {
+    videoId: videoId.value,
+    events: {
+      'onReady': onReady,
+    }
+  });
+}
+
+
+function loadYoutubeIframeAPI() {
+  if (window.YT) {
+    // API is already loaded. Initialize the player directly.
+    initPlayer()
+    return;
+  }
+
+  const script = document.createElement("script");
+  script.src = "https://www.youtube.com/iframe_api";
+  document.getElementsByTagName('script')[0].parentNode.insertBefore(script, document.getElementsByTagName('script')[0]);
+
+  window.onYouTubeIframeAPIReady = () => {
+    initPlayer();
+  };
 }
 
 function seekTo(seconds) {
   player.value.seekTo(seconds);
 }
 
-function onReady(event) {
-  canCreateMarks.value = true
+async function onReady(event) {
+  await loadMarks()
 }
-
-
 </script>
 
 <style>
-
 .youtube-embed iframe {
-
   width: 99.7%;
   aspect-ratio: 16/9;
 }
@@ -133,7 +170,8 @@ function onReady(event) {
   margin-left: 5px;
 
   &:hover {
-    background-color: var(--primary-color);
+    background-color: #64748B;
+    font-weight: 600;
   }
 }
 
@@ -165,10 +203,6 @@ function onReady(event) {
   align-items: center;
 }
 
-.timestamp:hover button {
-  background-color: #3b82f6;
-}
-
 .timestamp:hover .trash-icon {
   display: block;
 }
@@ -179,7 +213,7 @@ function onReady(event) {
 
 .timestamp button {
   background-color: #CBD5E1;
-  color: white;
+  color: #1E293B;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 0;
@@ -187,7 +221,8 @@ function onReady(event) {
   transition: background-color 0.3s ease;
 
   &:hover {
-    color: white;
+    background-color: white;
+    font-weight: 600;
   }
 }
 

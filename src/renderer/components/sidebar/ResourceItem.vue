@@ -111,8 +111,8 @@ function cancelEdit() {
 
   justify-content: space-between;
   cursor: pointer;
-  padding: 6px;
-  margin: 3px 0 3px 3px;
+  padding: 3px 6px;
+  margin: 3px 0 3px 6px;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }

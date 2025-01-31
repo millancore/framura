@@ -76,8 +76,11 @@ CREATE TABLE IF NOT EXISTS topics (
 const markManager = {
      create: (mark) => {
          const stmt = db.prepare('INSERT INTO marks (resource_id, mark_type, title, mark) VALUES (?, ?, ?, ?)');
-         return stmt.run(mark.resourceId, mark.markType, mark.title, mark.mark);
+         return stmt.run(mark.resource_id, mark.type, mark.title, mark.mark);
      },
+    getByResourceId: (resourceId) => {
+        return db.prepare('SELECT * FROM marks WHERE resource_id = ?').all(resourceId);
+    },
     updateTitle: (id, title) => {
          const stmt = db.prepare('UPDATE marks SET title = ? WHERE id = ?');
          return stmt.run(title, id);
@@ -123,6 +126,10 @@ register('resource.delete', (params) => {
 /**** Marks ****/
 register('mark.create', (params) => {
     return markManager.create(...params);
+});
+
+register('mark.by.resource', (params) => {
+    return markManager.getByResourceId(...params);
 });
 
 register('mark.title.update', (params) => {

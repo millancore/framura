@@ -8,12 +8,12 @@
     </div>
 
   <div class="create-topic">
-    <h3>Start creating a topic</h3>
+    <h3>Create Topic:</h3>
     <form @submit.prevent="createTopic">
       <input
           type="text"
           v-model="topic"
-          placeholder="Name your topic"
+          placeholder="..."
           required/>
       <button type="submit">Create</button>
     </form>
@@ -23,7 +23,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { topicApi} from "../Api";
+import { topicApi} from "@renderer/Api";
 import EventBus from "../EventBus";
 
 const topic = ref('')
@@ -43,6 +43,7 @@ async function createTopic() {
   .init-container {
     background: white;
     padding: 1rem;
+    min-height: 96%;
   }
 
   .intro {
@@ -52,7 +53,10 @@ async function createTopic() {
 
   .intro p {
     font-size: 1.5rem;
-    color: rgba(73, 82, 95, 0.9);
+    color: #374151;
+    font-family: Monospaced, sans-serif;
+    font-weight: 400;
+    line-height: 1.4;
   }
 
   .create-topic {
@@ -61,17 +65,16 @@ async function createTopic() {
   }
 
   .create-topic h3 {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
     font-weight: normal;
     font-size: 1.5rem;
-    color: rgba(73, 82, 95, 0.84);
+    color: #334155
   }
 
   .create-topic form {
     display: flex;
     flex-direction: column;
-    background: #FAFAFA;
-    padding: 1rem;
+
   }
 
 

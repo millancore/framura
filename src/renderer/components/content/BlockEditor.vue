@@ -37,7 +37,7 @@ async function loadNotes() {
   let content = await resourceApi.notes(props.resourceId)
 
   if (content.notes === '') {
-     content.notes = {}
+     content.notes = '{}';
   }
 
   editor.render(JSON.parse(content.notes));

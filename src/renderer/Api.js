@@ -38,6 +38,9 @@ export const markApi = {
     create: (params) => {
         return api.request("mark.create", params)
     },
+    getByResource: (resourceID) => {
+        return api.request("mark.by.resource", resourceID)
+    },
     updateTitle: (markId, title) => {
         return api.request("mark.title.update", markId, title)
     },
