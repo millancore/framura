@@ -17,7 +17,7 @@
       </form>
     </span>
     <PencilIcon v-if="!edit" class="edit-icon icon" @click="rename"/>
-    <Trash2Icon v-if="!edit" class="delete-icon icon" @click="deleteResource"/>
+    <ArchiveIcon v-if="!edit" class="delete-icon icon" @click="deleteResource"/>
   </li>
 </template>
 
@@ -25,7 +25,7 @@
 import {onMounted, ref, nextTick} from 'vue'
 import EventBus from "@renderer/EventBus";
 import { resourceApi } from "@renderer/Api";
-import { PencilIcon, Trash2Icon, CircleXIcon } from 'lucide-vue-next'
+import { PencilIcon, ArchiveIcon, CircleXIcon } from 'lucide-vue-next'
 
 const props = defineProps({
   resource: Object
@@ -153,9 +153,8 @@ function cancelEdit() {
 }
 
 .resource:hover {
-  background-color: #dbe8fe;
-  padding: 6px;
-  margin: 3px 0 3px 3px;
+  background-color: #E2E8F0;
+  padding-bottom: 0;
 }
 
  .selected {

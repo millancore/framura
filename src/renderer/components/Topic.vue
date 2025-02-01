@@ -1,30 +1,8 @@
 <template>
   <div class="topic-container">
     <h1>{{ topic.title }}</h1>
-
-    <h3>Add Resource</h3>
-    <form  @submit.prevent="createResource">
-    <div class="form-item">
-      <label for="title">Title:</label>
-      <input type="text" id="title" v-model="newResource.title" required/>
-    </div>
-    <div class="form-item">
-      <label for="url">YouTube:</label>
-      <input
-          @keydown="error = false"
-          id="url"
-          type="url"
-          v-model="newResource.url"
-          required
-      />
-    </div>
-      <p v-show="error" class="error">Please enter a valid YouTube URL</p>
-    <button type="submit">Add</button>
-  </form>
-
     <div class="notes">
       <h3>Notes:</h3>
-
 
     </div>
 
@@ -94,45 +72,8 @@ function validateYoutubeUrl() {
 .topic-container {
   background: #FAFAFA;
   padding: 1rem;
-  min-height: 96%;
 }
 
-h1, h3 {
-  margin: 0;
-  color: #374151;
-}
 
-h1 {
-  margin-bottom: 1rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  max-width: 400px;
-}
-
-.form-item {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.form-item label {
-  width: 90px;
-  padding: 0.5rem;
-  border-radius: 3px;
-}
-
-.error {
-  color: #F43F5E;
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin: 0;
-}
-
-.notes {
-  margin-top: 2rem;
-}
 
 </style>

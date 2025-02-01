@@ -90,6 +90,7 @@ async function getResource() {
 .notes {
   width: 50%;
   background: #FAFAFA;
+  border-radius: 2px;
 }
 
 </style>

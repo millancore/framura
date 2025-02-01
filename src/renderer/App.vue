@@ -6,21 +6,32 @@
       <component :is="currentComponent" :entity-id="entityId"/>
     </div>
 
+    <NewResource />
   </div>
 </template>
 
 <script setup>
-import {ref, shallowRef} from 'vue'
+import {ref, shallowRef, onMounted} from 'vue'
 import EventBus from "./EventBus";
 import Sidebar from "./components/sidebar/Sidebar.vue";
 import Resource from "./components/content/Resource.vue";
 import Topic from "./components/Topic.vue";
 import Init from "./components/Init.vue";
+import NewResource from "./components/NewResource.vue";
 
 const events = ref(0)
 const entityId = ref(null);
 
 const currentComponent = shallowRef(Init)
+
+onMounted(() => {
+   let lastResourceId = localStorage.getItem('lastResourceId');
+
+   if(lastResourceId) {
+     currentComponent.value = Resource;
+     entityId.value = lastResourceId;
+   }
+})
 
 /*
  * Load Resource Component
@@ -28,6 +39,8 @@ const currentComponent = shallowRef(Init)
 EventBus.on('load-resource', (resourceId) => {
   currentComponent.value = Resource;
   entityId.value = resourceId;
+
+  localStorage.setItem('lastResourceId', resourceId);
 })
 
 /**
@@ -48,6 +61,10 @@ EventBus.on('app.show.init', () => {
   entityId.value = null;
 })
 
+
+
+
+
 </script>
 
 
@@ -61,17 +78,9 @@ EventBus.on('app.show.init', () => {
 
 .resource-container {
   width: 100%;
-  margin-left: 16px;
-  margin-top: 8px;
-  margin-right: 4px;
-  gap: 12px;
-}
-
-
-.title {
-  color: #64748B;
-  font-size: 0.95rem;
-  text-transform: uppercase;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 8px;
 }
 
 .topic-form input {

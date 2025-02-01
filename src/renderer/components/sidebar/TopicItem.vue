@@ -1,13 +1,17 @@
 <template>
   <li class="topic-item" :class="{'selected': active}">
-    <a class="topic-title" @click="newResource()"> {{ topic.title }}</a>
-    <ul class="resource-list" v-if="resources.length">
+    <a class="topic-title" @click="showResource()"> {{ topic.title }}</a>
+    <ul class="resource-list">
       <ResourceItem
           :resource="resource"
           v-for="resource in resources"
           :key="resource.id"
           @reloadResources="getResources"
       />
+      <li @click="newResource" class="add-resource">
+        <PlusIcon class="add-icon" size="16" />
+        <span>Add new</span>
+      </li>
     </ul>
   </li>
 </template>
@@ -18,6 +22,7 @@ import {onMounted, ref} from 'vue'
 import ResourceItem from "./ResourceItem.vue";
 import {resourceApi} from "@renderer/Api";
 import EventBus from "@renderer/EventBus";
+import {PlusIcon} from 'lucide-vue-next'
 
 const props = defineProps({
   topic: Object
@@ -47,8 +52,12 @@ async function getResources() {
   resources.value = await resourceApi.getByTopic(props.topic.id)
 }
 
+function showResource() {
+  EventBus.emit('load-topic', props.topic.id)
+}
+
 function newResource() {
-  EventBus.emit('new-resource', props.topic.id)
+  EventBus.emit('modal.resource', props.topic.id)
 }
 </script>
 
@@ -66,10 +75,7 @@ function newResource() {
 }
 
 .topic-title:hover {
-  background-color: #E2E8F0;
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-  padding: 4px;
+  font-weight: 600;
 }
 
 .resource-list {
@@ -81,6 +87,31 @@ function newResource() {
 .selected .topic-title {
   color: #161e2e;
   font-weight: 600;
+}
+
+.add-resource {
+  margin-top: 4px;
+  margin-left: 12px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  cursor: pointer;
+}
+
+.add-resource:hover  span {
+  color: #475569
+}
+
+.add-resource span {
+  font-size: 0.8rem;
+  margin-left: 4px;
+  color: #64748B;
+}
+
+.add-icon {
+  color: #64748B;
+  cursor: pointer;
+  border-radius: 3px;
 }
 
 </style>

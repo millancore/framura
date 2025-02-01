@@ -6,26 +6,26 @@
         class="timestamp-add"
         v-if="canCreateMarks"
         @click="addTimestamp">
-      <ClockIcon class="clock-icon"/>
-     Capture
+      <ClockArrowDownIcon class="clock-icon"/>
+      Capture
     </button>
 
     <div class="timestamp-container">
-    <ul class="timestamps-list" v-if="timestamps.length">
-      <li class="timestamp" v-for="timestamp in timestamps" :key="timestamp.mark">
-        <button @click="seekTo(timestamp.mark)">{{ timestamp.button }}</button>
-        <form @submit.prevent="updateTitle(timestamp)">
-          <input
-              @focusout="updateTitle(timestamp)"
-              id="timestamp-text"
-              v-model="timestamp.title"
-              type="text"
-              placeholder="Add tex"
-          />
-        </form>
-        <Trash2Icon @click="deleteTimestamp(timestamp.id)" class="trash-icon"/>
-      </li>
-    </ul>
+      <ul class="timestamps-list" v-if="timestamps.length">
+        <li class="timestamp" v-for="timestamp in timestamps" :key="timestamp.mark">
+          <button @click="seekTo(timestamp.mark)">{{ timestamp.button }}</button>
+          <form @submit.prevent="updateTitle(timestamp)">
+            <input
+                @focusout="updateTitle(timestamp)"
+                id="timestamp-text"
+                v-model="timestamp.title"
+                type="text"
+                placeholder="Add tex"
+            />
+          </form>
+          <Trash2Icon @click="deleteTimestamp(timestamp.id)" class="trash-icon"/>
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -34,8 +34,8 @@
 
 <script setup>
 
-import {computed, onMounted, ref, watch, toRef, nextTick} from 'vue'
-import { ClockIcon, Trash2Icon } from 'lucide-vue-next'
+import {computed, nextTick, onMounted, ref, toRef, watch} from 'vue'
+import {ClockArrowDownIcon, Trash2Icon} from 'lucide-vue-next'
 import {markApi} from '@renderer/Api'
 
 const player = ref(null)
@@ -52,7 +52,7 @@ const watchResourceId = toRef(props, 'resourceId')
 onMounted(() => {
   loadYoutubeIframeAPI();
   nextTick(() => {
-     canCreateMarks.value = true;
+    canCreateMarks.value = true;
   });
 })
 
@@ -87,7 +87,7 @@ async function addTimestamp() {
 }
 
 async function loadMarks() {
-  let marks  = await markApi.getByResource(props.resourceId)
+  let marks = await markApi.getByResource(props.resourceId)
 
   timestamps.value = marks.map((mark) => ({
     id: mark.id,
@@ -95,7 +95,7 @@ async function loadMarks() {
     mark: mark.mark,
     button: `${Math.floor(mark.mark / 60)}:${String(Math.floor(mark.mark % 60)).padStart(2, '0')}`
   }));
-  
+
   canCreateMarks.value = true;
 }
 
@@ -151,7 +151,7 @@ async function onReady(event) {
 
 <style>
 .youtube-embed iframe {
-  width: 99.7%;
+  width: 99.53%;
   aspect-ratio: 16/9;
 }
 
@@ -163,14 +163,14 @@ async function onReady(event) {
 .timestamp-add {
   display: flex;
   align-items: center;
-  background-color: #64748B;
-  color: white;
+  background-color: transparent;
+  color: #374151;
   border-radius: 0;
   border: none;
   margin-left: 5px;
 
   &:hover {
-    background-color: #64748B;
+    background-color: transparent;
     font-weight: 600;
   }
 }
@@ -208,22 +208,16 @@ async function onReady(event) {
 }
 
 .timestamp:hover input {
-  border-bottom: 1px solid #3b82f6;
+  border-bottom: 1px solid #334155;
 }
 
 .timestamp button {
-  background-color: #CBD5E1;
-  color: #1E293B;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0;
+  background-color: transparent;
+  color: #334155;
+  padding: 4px 8px;
+  border: 1px dotted #64748B;
+  border-radius: 2px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: white;
-    font-weight: 600;
-  }
 }
 
 .timestamp input {
@@ -231,6 +225,10 @@ async function onReady(event) {
   border-radius: 0;
   background: none;
   padding: 0.5rem 1rem;
+
+  &:focus {
+    
+  }
 }
 
 </style>

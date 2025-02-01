@@ -1,6 +1,6 @@
 <template>
   <div id="editor-container">
-    <div id="editorjs" class="editor" ref="container"><!-- --></div>
+    <div id="editorjs" ref="container"><!-- --></div>
   </div>
 </template>
 
@@ -78,19 +78,17 @@ function initEditor() {
 
 #editor-container {
   overflow-y: auto;
-  height: 100vh;
+  border-radius: 2px;
 }
 
-.editor {
-
+#editorjs {
   background-color: #f8f8ec;
   color: #333;
   padding-left: 16px;
   padding-top: 16px;
-  border-radius: 5px;
   font-family: Arial, sans-serif;
   font-size: 1rem;
-  min-height: 97%;
+  min-height: calc(100vh - 20px);
 }
 
 

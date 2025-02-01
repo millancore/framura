@@ -46,8 +46,9 @@ CREATE TABLE IF NOT EXISTS topics (
 
  const resourceManager = {
     createResource: (resource) => {
+        console.log(resource);
         const stm = db.prepare('INSERT INTO resources (topic_id, title, url) VALUES (?, ?, ?)');
-        return stm.run(resource.topicId, resource.title, resource.url);
+        return stm.run(resource.topic, resource.title, resource.url);
     },
 
     getResourcesByTopic: (topic) => {
