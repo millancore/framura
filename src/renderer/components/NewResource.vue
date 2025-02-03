@@ -10,7 +10,12 @@
       <form  @submit.prevent="createResource">
         <div class="form-item">
           <label for="title">Title:</label>
-          <input type="text" id="title" v-model="resource.title" required/>
+          <input
+              type="text"
+              id="title"
+              v-model="resource.title"
+              maxlength="30"
+              required/>
         </div>
         <div class="form-item">
           <label for="url">YouTube URL:</label>

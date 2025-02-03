@@ -14,6 +14,7 @@
           type="text"
           v-model="topic"
           placeholder="..."
+          maxlength="30"
           required/>
       <button type="submit">Create</button>
     </form>

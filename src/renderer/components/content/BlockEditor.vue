@@ -79,6 +79,7 @@ function initEditor() {
 #editor-container {
   overflow-y: auto;
   border-radius: 2px;
+  max-height: 100vh;
 }
 
 #editorjs {
@@ -90,12 +91,4 @@ function initEditor() {
   font-size: 1rem;
   min-height: calc(100vh - 20px);
 }
-
-
-
-
-
-
-
-
 </style>

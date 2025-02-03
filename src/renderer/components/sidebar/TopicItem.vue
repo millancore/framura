@@ -53,6 +53,7 @@ async function getResources() {
 }
 
 function showResource() {
+  localStorage.setItem('lastTopicId', props.topic.id)
   EventBus.emit('load-topic', props.topic.id)
 }
 

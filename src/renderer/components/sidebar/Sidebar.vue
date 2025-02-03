@@ -5,7 +5,10 @@
         <SidebarIcon @click="toggleSidebar" class="sidebar-icon icon"/>
         <SquarePenIcon @click="showInit" class="mini-home-icon icon"/>
       </div>
-      <NotepadTextIcon v-if="showNotebook" @click="lastResource" class="notebook-icon icon"/>
+      <div class="middle-options">
+        <ListIcon @click="showTopic" class="icon"/>
+        <NotepadTextIcon v-if="showNotebook" @click="lastResource" class="notebook-icon icon"/>
+      </div>
       <ArchiveIcon @click="showArchive" class="archive-icon icon"/>
     </div>
   </transition>
@@ -41,7 +44,7 @@ import {computed, onMounted, ref} from 'vue'
 import TopicItem from "./TopicItem.vue";
 import {topicApi} from "@renderer/Api";
 import EventBus from "@renderer/EventBus";
-import {ArchiveIcon, NotepadTextIcon, SidebarIcon, SquarePenIcon} from 'lucide-vue-next'
+import {ArchiveIcon, ListIcon, NotepadTextIcon, SidebarIcon, SquarePenIcon} from 'lucide-vue-next'
 
 const topics = ref([])
 const miniSidebar = ref(false)
@@ -76,6 +79,12 @@ async function getTopics() {
 function lastResource() {
   let resource = localStorage.getItem('lastResourceId');
   EventBus.emit('load-resource', resource)
+}
+
+function showTopic() {
+  let topic = localStorage.getItem('lastTopicId');
+  console.log(topic)
+  EventBus.emit('load-topic', topic)
 }
 
 </script>
@@ -181,12 +190,18 @@ function lastResource() {
 
 .notebook-icon {
   background: #dbe8fe;
-  margin-left: -4px;
   padding: 4px;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
 
+.middle-options {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
 
 
 .fade-enter-active,
