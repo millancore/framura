@@ -64,14 +64,13 @@ async function createResource() {
   const {title, url} = resource.value;
   const topic = topicId.value;
 
-  console.log(topic, title, url);
-
   const result = await resourceApi.create({
     topic, title, url,
   });
 
-  if(result.changes) {
-    EventBus.emit('load-resource', result.lastInsertRowid);
+  if(result) {
+    console.log(result);
+    EventBus.emit('load-resource', result);
     EventBus.emit('sidebar.topic.refresh', topicId);
     closeModal();
   }

@@ -30,9 +30,9 @@
             :topic="topic"
         />
       </ul>
-      <div class="archive">
+      <div @click="showArchive" class="archive">
         <span>Archive</span>
-        <ArchiveIcon/>
+        <ArchiveIcon />
       </div>
     </div>
   </transition>
@@ -85,6 +85,10 @@ function showTopic() {
   let topic = localStorage.getItem('lastTopicId');
   console.log(topic)
   EventBus.emit('load-topic', topic)
+}
+
+function showArchive() {
+  EventBus.emit('app.show.archive')
 }
 
 </script>

@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref, toRef, watch} from 'vue'
+import {onMounted, ref, toRef, watch } from 'vue'
 import {resourceApi, topicApi} from "@renderer/Api";
 import BlockViewer from "./content/BlockViewer.vue";
 import {TrashIcon, PencilIcon, NotepadTextIcon} from "lucide-vue-next";
@@ -64,7 +64,7 @@ const archiveAlert = ref(false);
 const edit = ref(false);
 
 const props = defineProps({
-  entityId: Number
+  entityId: String
 })
 
 const topicId = toRef(props, 'entityId');

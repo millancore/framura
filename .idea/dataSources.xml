@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="duonote" uuid="15cba6c0-aa62-4c80-bb45-34246248e250">
+    <data-source source="LOCAL" name="duenote" uuid="8b3b21cb-9560-4252-aed2-55d6cd32b9ea">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/duonote.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/duenote.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>

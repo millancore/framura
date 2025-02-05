@@ -1,11 +1,14 @@
 <template>
   <div class="container">
-    <Sidebar :reload="events"/>
+    <!--- Sidebar -->
+    <Sidebar />
 
+    <!--- Components Main View --->
     <div class="resource-container">
       <component :is="currentComponent" :entity-id="entityId"/>
     </div>
 
+    <!--- New Resource --->
     <NewResource />
   </div>
 </template>
@@ -18,8 +21,8 @@ import Resource from "./components/content/Resource.vue";
 import Topic from "./components/Topic.vue";
 import Init from "./components/Init.vue";
 import NewResource from "./components/NewResource.vue";
+import Archive from "./components/Archive.vue";
 
-const events = ref(0)
 const entityId = ref(null);
 
 const currentComponent = shallowRef(Init)
@@ -43,14 +46,6 @@ EventBus.on('load-resource', (resourceId) => {
   localStorage.setItem('lastResourceId', resourceId);
 })
 
-/**
- * Load Topic Component
- */
-EventBus.on('new-resource', (topicId) => {
-  currentComponent.value = Topic;
-  entityId.value = topicId;
-})
-
 EventBus.on('load-topic', (topicId) => {
   currentComponent.value = Topic;
   entityId.value = topicId;
@@ -61,10 +56,9 @@ EventBus.on('app.show.init', () => {
   entityId.value = null;
 })
 
-
-
-
-
+EventBus.on('app.show.archive', () => {
+  currentComponent.value = Archive;
+})
 </script>
 
 

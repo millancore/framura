@@ -30,11 +30,11 @@ import EventBus from "../EventBus";
 const topic = ref('')
 
 async function createTopic() {
-  const res = await topicApi.create(topic.value);
+  const id = await topicApi.create(topic.value);
 
-  if (res.changes) {
+  if (id) {
       EventBus.emit('reload-sidebar')
-      EventBus.emit('load-topic', res.lastInsertRowid)
+      EventBus.emit('load-topic', id)
   }
 }
 

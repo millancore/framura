@@ -41,13 +41,6 @@ EventBus.on('sidebar.topic.refresh', (id) => {
   }
 })
 
-EventBus.on('new-resource', (id) => {
-  active.value = false;
-  if (props.topic.id === id) {
-    active.value = true;
-  }
-})
-
 async function getResources() {
   resources.value = await resourceApi.getByTopic(props.topic.id)
 }

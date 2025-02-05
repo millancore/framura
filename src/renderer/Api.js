@@ -1,3 +1,5 @@
+const api = window.api
+
 export const topicApi = {
     all: () => {
         return api.request("topic.all")

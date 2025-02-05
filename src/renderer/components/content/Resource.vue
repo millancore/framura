@@ -25,7 +25,7 @@ const resourceId = ref(null);
 const resource = ref({});
 
 const props = defineProps({
-  entityId: Number
+  entityId: String
 })
 
 onMounted(() => {
@@ -78,7 +78,7 @@ async function getResource() {
 }
 
 .source {
-  width: 50%;
+  width: 45%;
   background: #FAFAFA;
 }
 
@@ -88,7 +88,7 @@ async function getResource() {
 }
 
 .notes {
-  width: 50%;
+  width: 55%;
   background: #FAFAFA;
   border-radius: 2px;
 }

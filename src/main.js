@@ -7,7 +7,7 @@ if (started) {
   app.quit();
 }
 
-import dbManager from "./main/DBManager";
+import dbManager from "./main/db-manager";
 
 ipcMain.handle('dbManager', async (event, endpoint, ...params) => {
   return await dbManager.query(endpoint, params)
