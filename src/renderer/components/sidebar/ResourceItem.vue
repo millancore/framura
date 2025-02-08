@@ -17,7 +17,7 @@
       </form>
     </span>
     <PencilIcon v-if="!edit" class="edit-icon icon" @click="rename"/>
-    <ArchiveIcon v-if="!edit" class="delete-icon icon" @click="deleteResource"/>
+    <ArchiveIcon v-if="!edit" class="delete-icon icon" @click="archive"/>
   </li>
 </template>
 
@@ -72,8 +72,8 @@ function selected(id) {
    }
 }
 
-async function deleteResource() {
-  await resourceApi.delete(props.resource.id)
+async function archive() {
+  await resourceApi.archive(props.resource.id)
 
   /** Emit to parent reload */
   emit('reloadResources')

@@ -25,7 +25,7 @@ const resourceId = ref(null);
 const resource = ref({});
 
 const props = defineProps({
-  entityId: String
+  entityId:  [String, Number]
 })
 
 onMounted(() => {

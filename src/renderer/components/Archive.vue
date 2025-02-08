@@ -1,8 +1,8 @@
 <template>
   <div class="table-container">
-    <h2 class="title">Archived Resources</h2>
+    <h1 class="title">Archived Resources</h1>
     <div class="archived-list">
-      <table>
+      <table v-show="resources.length > 0">
         <thead>
         <tr>
           <th>Title</th>
@@ -13,13 +13,24 @@
         </thead>
         <tbody>
         <tr v-for="resource in resources" :key="resource.id">
-          <td>{{ resource.name }}</td>
-          <td>...</td>
-          <td>...</td>
+          <td>{{ resource.title }}</td>
+          <td>{{ resource.created_at }}</td>
+          <td>{{ resource.archived_at }}</td>
           <td class="actions">
-            <EyeIcon/>
-            <ArchiveRestoreIcon/>
-            <TrashIcon/>
+            <EyeIcon class="icon" @click="view(resource.id)"/>
+            <ArchiveRestoreIcon class="icon" @click="restore(resource.id)"/>
+            <span>
+              <button
+                  v-if="resource.delete"
+                  @click="del(resource.id)"
+                  class="delete-button">
+                Comfirm
+              </button>
+              <TrashIcon
+                  class="icon"
+                  v-if="!resource.delete"
+                  @click="resource.delete = true"/>
+            </span>
           </td>
         </tr>
         </tbody>
@@ -29,57 +40,36 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
+import {resourceApi} from '@renderer/Api'
 import {ArchiveRestoreIcon, EyeIcon, TrashIcon} from 'lucide-vue-next';
+import EventBus from "../EventBus";
 
-const resources = ref([
-  {id: 1, name: 'Resource 1', archived: true},
-  {id: 2, name: 'Resource 2', archived: false},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-  {id: 3, name: 'Resource 3', archived: true},
-]);
+const resources = ref([]);
 
-function viewResource(id) {
-  console.log(`Viewing resource with ID: ${id}`);
+onMounted(() => {
+  loadArchived()
+})
+
+async function loadArchived() {
+  resources.value = await resourceApi.getArchived();
 }
 
-function restoreResource(id) {
-  console.log(`Restoring resource with ID: ${id}`);
+function view(id) {
+  EventBus.emit('load-resource', id)
 }
 
-function deleteResource(id) {
-  console.log(`Deleting resource with ID: ${id}`)
+function restore(id) {
+  resourceApi.restore(id).then(() => {
+    loadArchived();
+    EventBus.emit('reload-sidebar')
+  })
+}
+
+function del(id) {
+  resourceApi.delete(id).then(() => {
+    loadArchived();
+  })
 }
 </script>
 
@@ -87,7 +77,7 @@ function deleteResource(id) {
 
 .title {
   margin-top: 1rem;
-  font-size: 1.5rem;
+  font-size: 2rem;
   color: #334155;
 }
 
@@ -109,7 +99,10 @@ function deleteResource(id) {
 .actions {
   display: flex;
   justify-content: space-between;
+}
 
+.icon {
+  cursor: pointer;
 }
 
 table {
@@ -123,17 +116,18 @@ th, td {
   text-align: left;
 }
 
-button {
-  margin-right: 0.5rem;
-  padding: 0.3rem 0.6rem;
+.delete-button {
+  background-color: #f87171;
+  color: white;
   border: none;
-  background-color: #007bff;
-  color: #fff;
   border-radius: 4px;
+  padding: 0.3rem 0.5rem;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
+.delete-button:hover {
+  background-color: #ef4444;
 }
+
 </style>

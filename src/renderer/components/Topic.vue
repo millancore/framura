@@ -31,7 +31,7 @@
           All notes belonging to this topic will be archived.
         </p>
         <div class="archive-actions">
-          <a class="archive-confirm" href="#">Confirm</a>
+          <a @click="archive" class="archive-confirm" href="#">Confirm</a>
           <a @click="cancelArchive" href="#">Cancel</a>
         </div>
       </div>
@@ -106,6 +106,13 @@ function archiveTopic() {
     return;
   }
   archiveAlert.value = true;
+}
+
+function archive() {
+  topicApi.archive(props.entityId).then(() => {
+    EventBus.emit('reload-sidebar')
+    EventBus.emit('app.show.init')
+  })
 }
 
 function cancelArchive() {

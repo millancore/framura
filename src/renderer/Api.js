@@ -9,9 +9,12 @@ export const topicApi = {
     },
     get: (id) => {
         return api.request("topic.get", id)
+    },
+    archive: async (id) => {
+        return await api.request("topic.archive", id)
     }
 }
-
+;
 export const resourceApi = {
     create: (params) => {
       return api.request("resource.create", params)
@@ -22,6 +25,23 @@ export const resourceApi = {
     get: (resourceId) => {
         return api.request("resource.get", resourceId)
     },
+
+    getArchived: async () => {
+      return await api.request("resource.get.archived")
+    },
+
+    archive: async (id) => {
+        return await api.request("resource.archive", id)
+    },
+
+    restore: async (id) => {
+        return await api.request("resource.restore", id)
+    },
+
+    deleted: async (id) => {
+        return await api.request("resource.deleted", id)
+    },
+
     getByTopic: (topicId) => {
         return api.request("resource.by.topic", topicId)
     },

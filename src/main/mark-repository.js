@@ -1,10 +1,10 @@
 class MarkRepository {
-    constructor(queryBuilder) {
-        this.queryBuilder = queryBuilder;
+    constructor(knex) {
+        this.knex = knex;
     }
 
     create = (mark) => {
-        return this.queryBuilder('marks')
+        return this.knex('marks')
             .insert({
                 resource_id: mark.resource_id,
                 mark_type: mark.type,
@@ -14,21 +14,21 @@ class MarkRepository {
     }
 
     getByResourceId = (resourceId) => {
-        return this.queryBuilder('marks')
+        return this.knex('marks')
             .where('resource_id', parseInt(resourceId))
             .select();
 
     }
 
     updateTitle = (id, title) => {
-        return this.queryBuilder('marks')
+        return this.knex('marks')
             .where('id', parseInt(id))
             .update({title});
 
     }
 
     delete = (id) => {
-        return this.queryBuilder('marks')
+        return this.knex('marks')
             .where('id', parseInt(id))
             .delete();
     }

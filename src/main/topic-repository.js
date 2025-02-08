@@ -1,19 +1,31 @@
 class TopicRepository {
-    constructor(queryBuilder) {
-        this.queryBuilder = queryBuilder;
+    constructor(knex) {
+        this.knex = knex;
     }
 
     getTopics = () => {
-        return this.queryBuilder('topics').select();
+        return this.knex('topics')
+            .whereNull('archived_at')
+            .select();
+    }
+
+    archive = async (topicId) => {
+        await this.knex('resources')
+            .where('topic_id', parseInt(topicId))
+            .update({archived_at: this.knex.fn.now()});
+
+        return this.knex('topics')
+            .where('id', parseInt(topicId))
+            .update({archived_at: this.knex.fn.now()});
     }
 
     createTopic = async (title) => {
-        return this.queryBuilder('topics')
+        return this.knex('topics')
             .insert({title: title.toString()});
     }
 
     getTopic = async (topicId) => {
-        return this.queryBuilder('topics')
+        return this.knex('topics')
             .where('id', parseInt(topicId))
             .first();
     }

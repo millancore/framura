@@ -36,6 +36,7 @@ onMounted(() => {
 });
 
 EventBus.on('sidebar.topic.refresh', (id) => {
+  console.log('Refresh', id)
   if (props.topic.id === id) {
     getResources();
   }

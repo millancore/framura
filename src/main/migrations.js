@@ -12,7 +12,6 @@ class Migrations {
             await this.knex.schema.createTable('topics', (table) => {
                 table.increments('id').primary();
                 table.string('title').notNullable();
-                table.string('status').defaultTo('active');
                 table.timestamp('created_at').defaultTo(this.knex.fn.now());
                 table.timestamp('updated_at').defaultTo(this.knex.fn.now());
                 table.timestamp('archived_at').nullable();

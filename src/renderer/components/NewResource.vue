@@ -69,9 +69,8 @@ async function createResource() {
   });
 
   if(result) {
-    console.log(result);
-    EventBus.emit('load-resource', result);
-    EventBus.emit('sidebar.topic.refresh', topicId);
+    EventBus.emit('load-resource', result[0]);
+    EventBus.emit('sidebar.topic.refresh', topicId.value);
     closeModal();
   }
 }

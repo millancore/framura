@@ -40,6 +40,7 @@ function register(endpoint, handler) {
 register('topic.all', topicRepository.getTopics);
 register('topic.create', topicRepository.createTopic);
 register('topic.get', topicRepository.getTopic);
+register('topic.archive', topicRepository.archive);
 
 register('resource.by.topic', resourceRepository.getResourcesByTopic);
 register('resource.get', resourceRepository.getResource);
@@ -56,9 +57,10 @@ register('resource.create', (params) => {
     return resourceRepository.createResource(...params)
 });
 
-register('resource.delete', (params) => {
-    //return db.prepare('DELETE FROM resources WHERE id = ?').run(params);
-});
+register('resource.get.archived', resourceRepository.getArchived)
+register('resource.archive', resourceRepository.archive);
+register('resource.restore', resourceRepository.restore);
+register('resource.delete', resourceRepository.delete);
 
 /**** Marks ****/
 register('mark.create', (params) => {
