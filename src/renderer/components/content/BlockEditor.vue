@@ -17,7 +17,7 @@ import {resourceApi} from "@renderer/Api";
 const container = ref(null);
 
 const props = defineProps({
-  resourceId: Number
+  resourceId: String
 })
 
 let editor;
@@ -34,18 +34,16 @@ watch(() => props.resourceId, () => {
 })
 
 async function loadNotes() {
-  let content = await resourceApi.notes(props.resourceId)
+  let notes = await resourceApi.notes(props.resourceId)
 
-  if (content.notes === '') {
-     content.notes = '{}';
+  if (notes && Object.keys(notes).length > 0) {
+    editor.render(notes);
   }
-
-  editor.render(JSON.parse(content.notes));
 }
 
 function UpdateNotes(api, event) {
   editor.save().then((outputData) => {
-    resourceApi.updateNotes(props.resourceId, JSON.stringify(outputData))
+    resourceApi.updateNotes(props.resourceId, outputData)
   }).catch((error) => {
     console.log('Saving failed: ', error)
   })

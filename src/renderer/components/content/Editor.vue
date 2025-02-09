@@ -15,7 +15,7 @@ const quill = ref(null);
 const fontSize = '20px';
 
 const props = defineProps({
-   resourceId: Number
+   resourceId: String
 })
 
 onMounted(initQuill)

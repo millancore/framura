@@ -93,7 +93,7 @@ async function showNote(resource) {
   const notes = await resourceApi.notes(resource.id);
 
   selected.value = resource.id;
-  viewer.value = notes.notes;
+  viewer.value = notes;
 }
 
 function loadResource(id) {
@@ -110,6 +110,11 @@ function archiveTopic() {
 
 function archive() {
   topicApi.archive(props.entityId).then(() => {
+
+    if (localStorage.getItem('lastTopicId') === props.entityId) {
+      localStorage.removeItem('lastTopicId');
+    }
+
     EventBus.emit('reload-sidebar')
     EventBus.emit('app.show.init')
   })

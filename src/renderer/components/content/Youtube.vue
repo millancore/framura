@@ -44,7 +44,7 @@ const canCreateMarks = ref(false)
 
 const props = defineProps({
   url: String,
-  resourceId: Number,
+  resourceId: String,
 })
 
 const watchResourceId = toRef(props, 'resourceId')
@@ -76,6 +76,7 @@ async function addTimestamp() {
   const time = player.value.getCurrentTime();
 
   const timestamp = {
+    id: crypto.randomUUID(),
     resource_id: props.resourceId,
     mark: time,
     type: 'youtube',

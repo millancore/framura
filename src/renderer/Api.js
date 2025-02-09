@@ -1,72 +1,117 @@
 const api = window.api
+import db from "./dexie";
 
 export const topicApi = {
-    all: () => {
-        return api.request("topic.all")
-    },
-    create: (title) => {
-        return api.request("topic.create", title)
-    },
-    get: (id) => {
-        return api.request("topic.get", id)
-    },
-    archive: async (id) => {
-        return await api.request("topic.archive", id)
+        all: () => {
+            return db.topics
+                .filter(topic => topic.archived_at === null)
+                .toArray();
+        },
+        create: (title) => {
+            return db.topics.add({
+                id: crypto.randomUUID(),
+                title: title,
+                created_at: Date.now(),
+                archived_at: null
+            })
+        },
+        get: (id) => {
+            return db.topics.get(id)
+        },
+        archive: async (id) => {
+
+            await db.resources
+                .filter(resource => resource.topic_id === id)
+                .modify(resource => {
+                    resource.archived_at = Date.now();
+                });
+
+            return db.topics.update(id, {archived_at: Date.now()})
+        }
     }
-}
 ;
 export const resourceApi = {
-    create: (params) => {
-      return api.request("resource.create", params)
+    create: (resource) => {
+        return db.resources.add({
+            id: crypto.randomUUID(),
+            topic_id: resource.topic,
+            title: resource.title,
+            url: resource.url,
+            notes: {},
+            created_at: Date.now(),
+            updated_at: Date.now(),
+            archived_at: null
+        });
     },
-    delete: async (resourceId) => {
-        return await api.request("resource.delete", resourceId)
-    },
-    get: (resourceId) => {
-        return api.request("resource.get", resourceId)
+    delete: (id) => {
+        return db.resources.delete(id);
     },
 
-    getArchived: async () => {
-      return await api.request("resource.get.archived")
+    get: (id) => {
+        return db.resources.get(id)
     },
 
-    archive: async (id) => {
-        return await api.request("resource.archive", id)
+    getArchived: () => {
+        return db.resources
+            .filter(resource => resource.archived_at !== null)
+            .toArray();
+    },
+
+    archive: (id) => {
+        return db.resources.update(id, {archived_at: Date.now()})
     },
 
     restore: async (id) => {
-        return await api.request("resource.restore", id)
+        const resource = await db.resources.get(id);
+
+        if (resource) {
+            const topic = await db.topics.get(resource.topic_id);
+            if (topic.archived_at !== null) {
+                await db.topics.update(resource.topic_id, {archived_at: null});
+            }
+
+            return db.resources.update(id, {archived_at: null});
+        }
     },
 
     deleted: async (id) => {
-        return await api.request("resource.deleted", id)
+        await db.resources.delete(id);
     },
 
     getByTopic: (topicId) => {
-        return api.request("resource.by.topic", topicId)
+        return db.resources
+            .where("topic_id")
+            .equals(topicId)
+            .filter(resource => resource.archived_at === null)
+            .toArray();
     },
-    notes: (resourceId) => {
-        return api.request("resource.notes", resourceId)
+    notes: async (id) => {
+        const resource = await db.resources.get(id);
+        return resource.notes;
+
     },
-    updateNotes: (resourceId, notes) => {
-        api.request("resource.notes.update", resourceId, notes)
+    updateNotes: (id, notes) => {
+        return db.resources.update(id, {notes: notes})
     },
-    update: (resourceId, title) => {
-        api.request("resource.title.update", resourceId, title)
+    update: (id, title) => {
+        return db.resources.update(id, {title: title})
     }
 }
 
 export const markApi = {
-    create: (params) => {
-        return api.request("mark.create", params)
+    create: (mark) => {
+        return db.marks.add(mark)
     },
     getByResource: (resourceID) => {
-        return api.request("mark.by.resource", resourceID)
+        return db.marks
+            .where("resource_id")
+            .equals(resourceID)
+            .sortBy("mark")
     },
-    updateTitle: (markId, title) => {
-        return api.request("mark.title.update", markId, title)
+    updateTitle: (id, title) => {
+        return db.marks.update(id, {title: title})
     },
-    delete: (markId) => {
-        return api.request("mark.delete", markId)
+    delete: (id) => {
+        return db.marks.delete(id)
     }
 }

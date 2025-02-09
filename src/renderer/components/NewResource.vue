@@ -1,13 +1,13 @@
 <template>
   <div v-if="isModalVisible"
-      class="modal-overlay"
-      @click.self="closeModal">
+       class="modal-overlay"
+       @click.self="closeModal">
     <div class="modal-content">
       <div class="modal-header">
         <span class="modal-title">Add Resource</span>
-        <XIcon class="close-icon" @click="closeModal" />
+        <XIcon class="close-icon" @click="closeModal"/>
       </div>
-      <form  @submit.prevent="createResource">
+      <form @submit.prevent="createResource">
         <div class="form-item">
           <label for="title">Title:</label>
           <input
@@ -49,14 +49,14 @@ const closeModal = () => (isModalVisible.value = false);
 const openModal = () => (isModalVisible.value = true);
 
 EventBus.on('modal.resource', (id) => {
-   resource.value = {};
-   topicId.value = id;
-   openModal();
+  resource.value = {};
+  topicId.value = id;
+  openModal();
 })
 
 async function createResource() {
 
-  if(!validateYoutubeUrl()) {
+  if (!validateYoutubeUrl()) {
     error.value = true;
     return;
   }
@@ -68,10 +68,10 @@ async function createResource() {
     topic, title, url,
   });
 
-  if(result) {
-    EventBus.emit('load-resource', result[0]);
-    EventBus.emit('sidebar.topic.refresh', topicId.value);
+  if (result) {
     closeModal();
+    EventBus.emit('load-resource', result);
+    EventBus.emit('sidebar.topic.refresh', topicId.value);
   }
 }
 

@@ -14,8 +14,8 @@
         <tbody>
         <tr v-for="resource in resources" :key="resource.id">
           <td>{{ resource.title }}</td>
-          <td>{{ resource.created_at }}</td>
-          <td>{{ resource.archived_at }}</td>
+          <td>{{ dateFormat(resource.created_at) }}</td>
+          <td>{{ dateFormat(resource.archived_at) }}</td>
           <td class="actions">
             <EyeIcon class="icon" @click="view(resource.id)"/>
             <ArchiveRestoreIcon class="icon" @click="restore(resource.id)"/>
@@ -57,6 +57,10 @@ async function loadArchived() {
 
 function view(id) {
   EventBus.emit('load-resource', id)
+}
+
+function dateFormat(timestamp) {
+  return new Date(timestamp).toLocaleString()
 }
 
 function restore(id) {

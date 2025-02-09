@@ -75,6 +75,10 @@ function selected(id) {
 async function archive() {
   await resourceApi.archive(props.resource.id)
 
+  if (localStorage.getItem('lastResourceId') === props.resource.id) {
+      localStorage.removeItem('lastResourceId');
+  }
+
   /** Emit to parent reload */
   emit('reloadResources')
 

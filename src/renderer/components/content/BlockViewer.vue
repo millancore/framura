@@ -13,7 +13,7 @@ import Table from "@editorjs/table";
 let blockViewer;
 
 const props = defineProps({
-  content: String
+  content: Object
 })
 
 onMounted(initEditor)
@@ -36,7 +36,10 @@ function initEditor() {
 }
 
 function loadContent() {
-  blockViewer.render(JSON.parse(props.content));
+
+  if (props.content && Object.keys(props.content).length > 0) {
+    blockViewer.render(props.content);
+  }
 }
 </script>
 
