@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    environment: release
     strategy:
       matrix:
         os:
