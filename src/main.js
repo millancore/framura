@@ -2,6 +2,9 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 
+const { updateElectronApp } = require('update-electron-app')
+updateElectronApp()
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
@@ -14,7 +17,7 @@ ipcMain.handle('dbManager', async (event, endpoint, ...params) => {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 1140,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -23,8 +26,8 @@ const createWindow = () => {
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
   } else {

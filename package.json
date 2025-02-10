@@ -1,9 +1,10 @@
 {
   "name": "duenote",
   "productName": "duenote",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "version": "0.1.0",
+  "description": "Split note app",
   "main": ".vite/build/main.js",
+  "repository": "https://github.com/millancore/framura",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -20,6 +21,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
     "@electron-forge/plugin-fuses": "^7.6.0",
     "@electron-forge/plugin-vite": "^7.6.0",
+    "@electron-forge/publisher-github": "^7.6.1",
     "@electron/fuses": "^1.8.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "electron": "33.3.1",
@@ -43,6 +45,7 @@
     "electron-squirrel-startup": "^1.0.1",
     "lucide-vue-next": "^0.474.0",
     "mitt": "^3.0.1",
+    "update-electron-app": "^3.1.1",
     "vue": "^3.5.13"
   }
 }
