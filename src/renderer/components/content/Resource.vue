@@ -1,7 +1,7 @@
 <template>
   <div class="container" v-if="resource.id">
     <div class="notes">
-      <BlockEditor :resource-id="resource.id"/>
+      <BlockEditor :read-only="false" :resource-id="resource.id"/>
     </div>
     <div class="source">
       <Youtube

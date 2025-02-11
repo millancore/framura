@@ -12,12 +12,17 @@ import Header from '@editorjs/header';
 import Delimiter from '@editorjs/delimiter'
 import Table from '@editorjs/table'
 import List from '@editorjs/list'
+import LaTex from 'editorjs-math'
 import {resourceApi} from "@renderer/Api";
 
 const container = ref(null);
 
 const props = defineProps({
-  resourceId: String
+  resourceId: String,
+  readOnly: {
+    type: Boolean,
+    default: false
+  }
 })
 
 let editor;
@@ -34,6 +39,9 @@ watch(() => props.resourceId, () => {
 })
 
 async function loadNotes() {
+
+  if(!props.resourceId) return;
+
   let notes = await resourceApi.notes(props.resourceId)
 
   if (notes && Object.keys(notes).length > 0) {
@@ -42,6 +50,9 @@ async function loadNotes() {
 }
 
 function UpdateNotes(api, event) {
+
+  if(props.readOnly) return;
+
   editor.save().then((outputData) => {
     resourceApi.updateNotes(props.resourceId, outputData)
   }).catch((error) => {
@@ -53,6 +64,7 @@ function initEditor() {
   editor = new EditorJS({
     holder: 'editorjs',
     placeholder: 'Start typing here or use "/"',
+    readOnly: props.readOnly,
     tools: {
       header: {
         class: Header,
@@ -65,6 +77,7 @@ function initEditor() {
       list: List,
       delimiter: Delimiter,
       table: Table,
+      math: LaTex
     },
     onReady: loadNotes,
     onChange: UpdateNotes,
@@ -89,4 +102,5 @@ function initEditor() {
   font-size: 1rem;
   min-height: calc(100vh - 20px);
 }
+
 </style>

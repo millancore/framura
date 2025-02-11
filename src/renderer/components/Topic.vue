@@ -1,11 +1,15 @@
 <template>
   <div class="topic-container">
     <div class="viewer-panel">
-      <div class="empty-viewer" v-if="!viewer">
+      <div class="empty-viewer" v-if="!resourceId">
           <NotepadTextIcon size="72" class="icon"/>
           <p>Select a note to view.</p>
       </div>
-      <BlockViewer v-show="viewer" class="viewer" :content="viewer"/>
+      <BlockEditor
+          class="viewer"
+          v-show="resourceId"
+          :read-only="true"
+          :resource-id="resourceId"/>
     </div>
     <div class="list-panel">
       <div class="header">
@@ -52,13 +56,13 @@
 <script setup>
 import {onMounted, ref, toRef, watch } from 'vue'
 import {resourceApi, topicApi} from "@renderer/Api";
-import BlockViewer from "./content/BlockViewer.vue";
+import BlockEditor from "./content/BlockEditor.vue";
 import {TrashIcon, PencilIcon, NotepadTextIcon} from "lucide-vue-next";
 import EventBus from "../EventBus";
 
 const topic = ref({});
 const resources = ref([]);
-const viewer = ref(null);
+const resourceId = ref(null);
 const selected = ref(null);
 const archiveAlert = ref(false);
 const edit = ref(false);
@@ -78,7 +82,7 @@ watch(topicId, () => {
   getTopic();
   getResources();
   selected.value = null;
-  viewer.value = null;
+  resourceId.value = null;
 })
 
 async function getTopic() {
@@ -90,10 +94,7 @@ async function getResources() {
 }
 
 async function showNote(resource) {
-  const notes = await resourceApi.notes(resource.id);
-
-  selected.value = resource.id;
-  viewer.value = notes;
+  resourceId.value = resource.id;
 }
 
 function loadResource(id) {
@@ -221,8 +222,6 @@ function editTopic() {
   }
 
 }
-
-
 
 .viewer {
   padding: 1rem;
