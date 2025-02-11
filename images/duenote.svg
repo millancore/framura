@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150" height="150"
+     viewBox="0 0 150 150"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Contorno del cuadrado (150x150) -->
+  <rect x="0" y="0" width="150" height="150"
+        fill="none" stroke="#333" stroke-width="1" />
+
+  <!-- Esquina recortada #1 (inferior izquierda, ahora 30px cada lado) -->
+  <polygon points="0,150 30,150 0,120"
+           fill="#333" />
+
+  <!-- Esquina recortada #2 (superior derecha, ahora 30px cada lado) -->
+  <polygon points="150,0 120,0 150,30"
+           fill="#333" />
+
+  <!-- Letra D centrada -->
+  <text x="75" y="85"
+        font-size="60"
+        font-family="Script"
+        fill="#333"
+        text-anchor="middle"
+        dominant-baseline="middle">
+    D
+  </text>
+</svg>
