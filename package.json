@@ -1,7 +1,7 @@
 {
   "name": "duenote",
   "productName": "duenote",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Split note app",
   "main": ".vite/build/main.js",
   "repository": "https://github.com/millancore/framura",

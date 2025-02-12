@@ -67,7 +67,7 @@ const videoId = computed(() => {
 
 const embedUrl = computed(() => {
   return videoId.value
-      ? `https://www.youtube.com/embed/${videoId.value}?enablejsapi=1`
+      ? `https://www.youtube.com/embed/${videoId.value}?enablejsapi=1&rel=0`
       : null;
 })
 
